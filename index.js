@@ -253,9 +253,17 @@ var generateArtAssets = function (platform, type, processor, srcPath) {
  * @return {Promise}
  */
 var generateIcons = function (platform) {
+    var srcPath = program.icon
+
+    // use platform icon is we can find it
+    var platformPath = srcPath.replace(/\.png$/, '-' + platform.name + '.png')
+    if (fs.existsSync(platformPath)) {
+        srcPath = platformPath
+    }
+
     // Use a background if we have one and the platform has it set
     if (platform.iconBackground && program.background) {
-        var srcPath = [ program.icon, program.background ];
+        srcPath = [srcPath, program.background]
     }
 
     return generateArtAssets(platform, 'icon', generateIcon, srcPath);
