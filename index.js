@@ -235,9 +235,13 @@ var generateArtAssets = function (platform, type, processor, srcPath) {
     display.header('Generating ' + type + ' assets for ' + platform.name);
     srcPath = srcPath || program[type];
 
-    return Q.all(platform[type+'Assets'].map(function(asset) {
-        var outPath = platform[type+'Path'];
+    var dstPaths = platform[type+'Assets'].filter(function(asset) {
+        var outPath = path.join(platform[type+'Path'], asset.name)
+        return fs.existsSync(path.dirname(outPath))
+    });
 
+    return Q.all(dstPaths.map(function(asset) {
+        var outPath = platform[type+'Path'];
         return processor(asset, srcPath, outPath);
     }));
 };
